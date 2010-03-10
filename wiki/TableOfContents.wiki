@@ -1,6 +1,6 @@
 #summary This is the table of content
 
   * [Roadmap Roadmap]
-  * [OverviewGwtArchitecture GWT Gwt]
+  * [OverviewGwtArchitecture GWT Gwt design patterns]
   * [HTMLElements HTML reference]
   * [CSSReference CSS reference]
