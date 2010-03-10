@@ -1,6 +1,6 @@
 #summary This is the table of content
 
   * [Roadmap Roadmap]
-  * [MVP DOM reference]
+  * [GWT DOM GwtArchitecture]
   * [HTMLElements HTML reference]
   * [CSSReference CSS reference]
