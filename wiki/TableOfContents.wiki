@@ -1,7 +1,7 @@
 #summary This is the table of content
 
   * [Roadmap Roadmap]
-  * [OverviewGwtArchitecture Gwt design patterns]
+  * [OverviewGwtArchitecture Gwt advice]
      * [ArticleMvpGoogleStyle  Google style MVP]
      * [ArticleMvpDotNetStyle  .Net style MVP]
      * [ArticleGwtHistoryManagement  How to do history management]
