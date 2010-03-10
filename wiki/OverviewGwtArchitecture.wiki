@@ -18,6 +18,6 @@ Todo: Same functionality less fuss
 
 = How to do layouting = 
 
-= What do beyond stock widgets = 
+= Going beyond stock widgets = 
 
 = What about gwt generators =
