@@ -6,7 +6,6 @@
      * [ArticleMvpDotNetStyle  .Net style MVP]
      * [ArticleGwtHistoryManagement  How to do history management]
      * [ArticleGwtEventBus Using the event bus]
-  * [OverviewGwtGui  Gwt gui patterns]
      * [ArticleGwtLayout960gs   Layout solutions with 960gs]
      * [ArticleGwtCustomWidgets   Going beyond stock widgets]
      * [ArticleGwtGenerators   Using the gwt generators]
