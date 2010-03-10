@@ -1,0 +1,7 @@
+#what will get done
+
+  * Add general 3 tier architecture overview and how the libraries used fit together
+  * Make tutorial on the two distinct mvp styles (code is done, need to write wiki)
+  * Update history management and event bus on contacts example
+  * Do contacts example with dot net style MVP 
+
