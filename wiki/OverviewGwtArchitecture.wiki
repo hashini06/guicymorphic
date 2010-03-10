@@ -1,13 +1,23 @@
-#summary One-sentence summary of this page.
+#summary General design patters and architecture tips for GWT
 
 = Introduction =
 
-Add your content here.
+If you are a GWT developer chances are you came across [Official Gwt documentation on mvp http://code.google.com/webtoolkit/doc/latest/tutorial/mvp-architecture.html] and [Ray Ryan Mvp google/io presentation http://code.google.com/events/io/2009/sessions/GoogleWebToolkitBestPractices.html].
 
+I'd caution against following the mentioned word by word. Use event bus and command pattern rpc sparingly i.e. it should not be a knee jerk reaction.
 
-= Details =
+= Different flavors of Model View Presenter =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Todo: Compare mvp here
+
+= History handling =
+
+Todo: Same functionality less fuss
+
+= How to use the event bus =
+
+= How to do layouting = 
+
+= What do beyond stock widgets = 
+
+= What about gwt generators =
