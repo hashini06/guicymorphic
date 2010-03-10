@@ -4,3 +4,5 @@
   * Make tutorial on the two distinct mvp styles (code is done, need to write wiki)
   * Update history management and event bus on contacts example
   * Do contacts example with dot net style MVP 
+
+More stuff more stuff...
