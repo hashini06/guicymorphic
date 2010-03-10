@@ -9,3 +9,4 @@
      * [ArticleGwtLayout960gs   Layout solutions with 960gs]
      * [ArticleGwtCustomWidgets   Going beyond stock widgets]
      * [ArticleGwtGenerators   Using the gwt generators]
+  * [About About]
