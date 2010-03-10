@@ -93,4 +93,16 @@ public class Reflections {
         }
         return null;
     }
+
+
+    /**
+     * Universal cast that always succeeds.
+     *
+     * @param o
+     * @param <T>
+     * @return
+     */
+    public static <T> T unicast(Object o) {
+        return (T) o;
+    }
 }
