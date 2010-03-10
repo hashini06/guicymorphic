@@ -2,6 +2,9 @@
 
   * [Roadmap Roadmap]
   * [OverviewGwtArchitecture Gwt design patterns]
-     * [OverviewGwtArchitecture Gwt design patterns]
+     * [ArticleMvpGoogleStyle  Google style MVP]
+     * [ArticleMvpDotNetStyle  .Net style MVP]
+     * [ArticleGwtHistoryManagement  How to do history management]
+     * [ArticleGwtEventBus Using the event bus]
   * [HTMLElements HTML reference]
   * [CSSReference CSS reference]
