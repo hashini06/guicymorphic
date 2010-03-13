@@ -16,6 +16,18 @@
         <fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
     </path>
 
+    <path id="jetty.plugin.classpath">
+        <fileset dir="lib/jetty" includes="*.jar"/>
+     </path>
+
+
+   <taskdef classpathref="jetty.plugin.classpath" resource="tasks.properties" loaderref="jetty" />
+
+
+
+
+
+
     <target name="copylibs" description="Copy libs to WEB-INF/lib">
         <mkdir dir="war/WEB-INF/lib"/>
         <copy todir="war/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar"/>
@@ -89,11 +101,37 @@
         </java>
     </target>
 
+
+    <target name="tutorial.mvp.gwtc" depends="javac" description="GWT compile mvp examples to JavaScript">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+            <classpath>
+                <pathelement location="src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+            <jvmarg value="-Xmx256M"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg line="${gwt.args}"/>
+            <arg value="guicymorphic.tutorial.mvp.MvpTutorial"/>
+        </java>
+    </target>
+
+    <target name="tutorial.mvp.war" depends="clean,tutorial.mvp.gwtc" description="Packages the mvp examples into WAR">
+        <mkdir dir="dist" />
+        <war basedir="war" destfile="dist/mvp.war"/>
+    </target>
+
+    <target name="tutorial.mvp.jetty" depends="tutorial.mvp.war" description="Runs the War on jetty">
+        <jetty tempDirectory="jetty-temp">
+             <webApp name="mvp" warfile="dist/mvp.war" contextpath="/mvp" />
+         </jetty>
+
+    </target>
+
     <target name="javac.tests" depends="javac" description="Compiles test code">
         <javac srcdir="test" includes="**" encoding="utf-8"
                source="1.5" target="1.5" nowarn="true"
                debug="true" debuglevel="lines,vars,source">
-            <classpath location="../lib/test/junit-4.8.1.jar"/>
             <classpath refid="project.class.path"/>
         </javac>
     </target>

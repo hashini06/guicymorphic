@@ -184,7 +184,7 @@
       <module fileurl="file://$PROJECT_DIR$/Guicymorphic.iml" filepath="$PROJECT_DIR$/Guicymorphic.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/classes" />
   </component>
   <component name="SvnBranchConfigurationManager">
@@ -201,11 +201,13 @@
         <root url="file://$PROJECT_DIR$/lib/test" />
         <root url="jar://$PROJECT_DIR$/gwt/gwt-user.jar!/" />
         <root url="jar://$PROJECT_DIR$/gwt/gwt-dev.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib/jetty" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/lib/gwt" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/jetty" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/lib/test" recursive="false" />
     </library>
   </component>
