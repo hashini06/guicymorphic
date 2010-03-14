@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="gwt">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/gwt/gwt-dev.jar!/" />
+      <root url="jar://$PROJECT_DIR$/gwt/gwt-servlet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/gwt/gwt-user.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gwt/gin-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gwt/smartgwt.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/gwt/gwt-user.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gwt/gin-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gwt/smartgwt.jar!/" />
+    </SOURCES>
+  </library>
+</component>
