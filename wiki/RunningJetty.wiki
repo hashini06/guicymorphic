@@ -58,6 +58,8 @@ You need Jetty libs on the classpath. I recommend using the Webtide distribution
 }}}
 
 For more on the Ant plugin see [http://docs.codehaus.org/display/JETTY/Ant+Jetty+Plugin Jetty Ant Plugin].
+
+Note the ant plugin is not part of the official distribution. You can get it from maven repository [http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-ant/7.0.1.v20091125/ jetty-ant maven directory].
 = via Scripts =
 {{{
 wget http://dist.codehaus.org/jetty/jetty-hightide-7.0.1/jetty-hightide-7.0.1.v20091125.tar.gz
