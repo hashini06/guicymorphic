@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="contacts" default="war" basedir=".">
+
+
+    <path id="project.class.path">
+        <pathelement location="war/WEB-INF/classes"/>
+        <fileset dir="../gwt" includes="gwt*.jar"/>
+        <fileset dir="../lib/gwt" includes="*.jar"/>
+        <fileset dir="../lib/test" includes="*.jar"/>
+        <!-- Add any additional non-server libs (such as JUnit) -->
+        <fileset dir="war/WEB-INF/lib" includes="**/*.jar"/>
+    </path>
+
+    <path id="jetty.class.path">
+        <!--add jetty libs to classpath this includes the servet-2.5.jar-->
+        <fileset dir="../jetty/lib" includes="*.jar"/>
+        <!--And the jsp support libs on the CP-->
+        <fileset dir="../jetty/lib/jsp" includes="*.jar"/>
+        <!--Add ant tasks from lib-->
+        <fileset dir="../lib/ant" includes="*.jar"/>
+    </path>
+
+
+    <taskdef classpathref="jetty.class.path" name="jetty" classname="org.mortbay.jetty.ant.JettyRunTask"/>
+
+
+    <target name="copylibs" description="Copy libs to WEB-INF/lib">
+        <mkdir dir="war/WEB-INF/lib"/>
+        <copy todir="war/WEB-INF/lib" file="../gwt/gwt-servlet.jar"/>
+        <copydir dest="war/WEB-INF/lib" src="../lib" includes="*.jar"/>
+        <!-- Add any additional server libs that need to be copied -->
+    </target>
+
+    <!-- Copy metadata to build classpath -->
+    <target name="copymetafiles">
+        <copy file="conf/log4j-production.properties" tofile="conf/log4j.properties" overwrite="true"/>
+        <mkdir dir="war/WEB-INF/classes"/>
+        <copy todir="war/WEB-INF/classes">
+            <fileset dir="conf">
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="javac" depends="copylibs,copymetafiles" description="Compile java source">
+        <mkdir dir="war/WEB-INF/classes"/>
+        <javac srcdir="src" includes="**" encoding="utf-8"
+               destdir="war/WEB-INF/classes"
+               source="1.5" target="1.5" nowarn="true"
+               debug="true" debuglevel="lines,vars,source">
+            <classpath refid="project.class.path"/>
+            <sourcepath path="../fw/src"/>
+        </javac>
+        <copy todir="war/WEB-INF/classes">
+            <fileset dir="src" excludes="**/*.java"/>
+        </copy>
+    </target>
+
+    <target name="gwtc" depends="javac" description="GWT compile to JavaScript">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+            <jvmarg value="-Xmx256M"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.contacts.Contacts"/>
+        </java>
+    </target>
+
+    <target name="devmode" depends="javac" description="Run development mode">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-startupUrl"/>
+            <arg value="Contacts.html"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.contacts.Contacts"/>
+        </java>
+    </target>
+
+
+    <target name="war" depends="gwtc" description="Create a war file">
+        <mkdir dir="build"/>
+        <zip destfile="build/contacts.war" basedir="war"/>
+    </target>
+
+
+    <target name="war.optional.build" depends="war.check.existance" unless="war.built">
+        <antcall target="war"/>
+    </target>
+
+    <target name="war.check.existance">
+        <available file="build/contacts.war" property="war.built"/>
+    </target>
+
+    <target name="jetty" depends="war.optional.build">
+        <jetty tempDirectory="jetty-temp">
+            <webapp name="contacts" warfile="build/contacts.war" contextpath="/contacts"/>
+        </jetty>
+    </target>
+
+    <target name="clean" description="Cleans this project">
+        <delete dir="war/WEB-INF/classes" failonerror="false"/>
+        <delete dir="war/contacts" failonerror="false"/>
+        <delete dir="war/WEB-INF/lib" failonerror="false"/>
+        <delete dir="build"/>
+    </target>
+
+
+    <!--Not exporting with hibernate tool because we are programatically adding entities at runtime.-->
+    <!--We'd need to define each entity in the hibernate.cfg.xml to make this tool work-->
+    <!--<taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask"-->
+    <!--classpathref="project.class.path"/>-->
+
+    <target name="export.schema" depends="javac" description="Export the schema">
+        <copy file="conf/log4j-disabled.properties" tofile="conf/log4j.properties" overwrite="true"/>
+        <delete file="build/schema.sql"/>
+        <java failonerror="true" fork="true" classname="guicymorphic.contacts.tools.SchemaExporter"
+              output="build/schema.sql">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+        </java>
+    </target>
+
+</project>
