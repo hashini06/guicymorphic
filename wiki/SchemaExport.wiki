@@ -43,6 +43,4 @@ You can run the class via ant with e.g.
     </target>
 }}}
 
-
-
-
+*Important* For shared development databases: After using the schema to create the database structure you should only allow the hibernate user on the database to do inserts and updates. If your novice coworker accidentally sets the hibernate.hbm2ddl.auto to create it will not empty/drop your database as the db user will not have the appropriate rights.
