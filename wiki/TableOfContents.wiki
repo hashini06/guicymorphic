@@ -11,5 +11,5 @@
      * [ArticleGwtGenerators   Using the gwt generators]
   * [OverviewTools   Useful tools]
      * [RunningJetty   Running Jetty]
-     * [SchemaExport   Exporting Hibernate to Schema]
+     * [SchemaExport   Exporting Schema with Hibernate]
   * [About About]
