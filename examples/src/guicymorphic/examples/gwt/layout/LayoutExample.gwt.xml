@@ -1,0 +1,10 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
+<module rename-to="layouts">
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name='guicymorphic.fw.gwt.ninesixty.N60gs'/>
+    <inherits name="com.google.gwt.user.theme.standard.Standard" />
+    <entry-point class='guicymorphic.examples.gwt.layout.client.LayoutExample'/>
+
+</module>
