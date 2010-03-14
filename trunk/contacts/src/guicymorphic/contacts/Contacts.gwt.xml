@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='contacts'>
+    <!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name='com.google.gwt.user.User'/>
+
+
+    <!-- Inherit SmartGwt and other stuff                           -->
+    <inherits name='com.smartgwt.SmartGwt'/>
+    <inherits name='guicymorphic.fw.gwt.common.GuicymorphicCommon'/>
+    <inherits name="com.google.gwt.inject.Inject"/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='guicymorphic.contacts.client.Contacts'/>
+
+    <!-- Specify the paths for translatable code                    -->
+    <source path='client'/>
+    <source path='shared'/>
+
+</module>
