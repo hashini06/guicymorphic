@@ -10,4 +10,6 @@
      * [ArticleGwtCustomWidgets   Going beyond stock widgets]
      * [ArticleGwtGenerators   Using the gwt generators]
   * [OverviewTools   Useful tools]
+     * [RunningJetty   Running Jetty]
+     * [SchemaExport   Exporting Hibernate to Schema]
   * [About About]
