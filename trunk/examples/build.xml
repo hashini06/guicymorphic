@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="examples" basedir=".">
+
+
+    <path id="project.class.path">
+
+        <!--now we need the application level dependencies-->
+        <fileset dir="../lib" includes="*.jar"/>
+        <!--And the gwt dependencies-->
+        <fileset dir="../gwt" includes="*.jar"/>
+        <!--And the test dependencies-->
+        <fileset dir="../lib/test" includes="*.jar"/>
+        <!--Firefox extensions are next to WebDriver jars-->
+        <fileset dir="../lib/test" includes="*.xpi"/>
+    </path>
+
+    <path id="jetty.class.path">
+
+        <!--add jetty libs to classpath this includes the servet-2.5.jar-->
+        <fileset dir="../jetty/lib" includes="*.jar"/>
+        <!--And the jsp support libs on the CP-->
+        <fileset dir="../jetty/lib/jsp" includes="*.jar"/>
+        <fileset dir="../lib/ant" includes="*.jar"/>
+    </path>
+
+    <taskdef classpathref="jetty.class.path" name="jetty" classname="org.mortbay.jetty.ant.JettyRunTask"/>
+
+
+    <target name="examples.mvp.devmode">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-startupUrl"/>
+            <arg value="MvpExample.html"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.examples.gwt.mvp.MvpExample"/>
+        </java>
+    </target>
+
+
+    <target name="examples.history.devmode">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-startupUrl"/>
+            <arg value="HistoryExample.html"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.examples.gwt.history.HistoryExample"/>
+        </java>
+    </target>
+
+    <target name="examples.eventbus.devmode">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-startupUrl"/>
+            <arg value="EventBusExample.html"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.examples.gwt.eventbus.EventBusExample"/>
+        </java>
+    </target>
+
+    <target name="examples.layout.devmode">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-startupUrl"/>
+            <arg value="LayoutsExample.html"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.examples.gwt.layout.LayoutExample"/>
+        </java>
+    </target>
+
+
+    <!--There is no server side code so we can only compile the Java to JavaScript-->
+    <target name="examples.eventbus.gwtc" description="Compiles Java to JavaScript.">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+            <classpath>
+                <pathelement location="src"/>
+                <pathelement location="../fw/src"/>
+                <path refid="project.class.path"/>
+            </classpath>
+            <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+            <jvmarg value="-Xmx256M"/>
+            <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+            <arg value="guicymorphic.examples.gwt.eventbus.EventBusExample"/>
+        </java>
+    </target>
+
+    <target name="examples.eventbus.war" depends="examples.eventbus.gwtc">
+        <mkdir dir="build"/>
+        <war basedir="war" warfile="build/tutorial.war"/>
+    </target>
+
+    <target name="examples.eventbus.war.optional" depends="examples.eventbus.checkwarbuilt" unless="war.built">
+        <antcall target="examples.eventbus.war"/>
+    </target>
+
+    <target name="examples.eventbus.checkwarbuilt">
+        <available file="build/tutorial.war" property="war.built"/>
+    </target>
+
+    <target name="examples.eventbus.run.jetty" depends="examples.eventbus.war.optional">
+        <jetty tempDirectory="jetty-temp">
+            <webapp name="examples" warfile="build/tutorial.war" contextpath="/examples"/>
+        </jetty>
+    </target>
+
+    <target name="examples.eventbus.tests">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src"
+               destdir="build/classes"
+               classpathref="project.class.path"
+               debug="on"
+               source="1.6"
+               target="1.6">
+            <sourcepath>
+                <pathelement location="../fw/src"/>
+            </sourcepath>
+        </javac>
+
+
+        <java fork="true"
+              classname="org.junit.runner.JUnitCore"
+              failonerror="true"
+              taskname="junit">
+             <classpath refid="project.class.path"/>
+            <classpath>
+                <pathelement location="build/classes"/>
+            </classpath>
+            <arg value="guicymorphic.examples.webdriver.AllTestsSuite"/>
+        </java>
+    </target>
+</project>

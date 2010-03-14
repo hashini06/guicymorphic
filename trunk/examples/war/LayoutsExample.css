@@ -1,0 +1,34 @@
+#toc {
+   background-color:chocolate;
+}
+
+#container {
+    overflow: hidden;
+   background-color:goldenrod;
+}
+
+#main{
+   background-color:darkgreen;
+}
+
+#subsectionTop{
+   background-color:palevioletred;
+}
+
+#subsectionLeft{
+   background-color:purple;   
+}
+
+#subsectionLeftTop{
+   background-color:royalblue;
+}
+
+#subsectionLeftBottom{
+   background-color:midnightblue;
+}
+
+#subsectionRight{
+   background-color:yellowgreen;
+}
+
+
