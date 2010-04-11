@@ -12,11 +12,9 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: alen
- * Date: Feb 20, 2010
- * Time: 1:07:25 PM
- * To change this template use File | Settings | File Templates.
+ * Extends {@link org.hibernate.cfg.AnnotationConfiguration} to allow for package scan of all entities in package.
+ *
+ * @author Alen Vrecko
  */
 public class ExtendedAnnotationConfiguration extends AnnotationConfiguration {
 
@@ -35,14 +33,29 @@ public class ExtendedAnnotationConfiguration extends AnnotationConfiguration {
     }
 
     public ExtendedAnnotationConfiguration scanPackageForAnnotatedClasses(Package entityPackage) {
-
-
+        if (entityPackage == null) {
+            throw new NullPointerException("Putting null Package is useless.\nSometimes custom ClassLoader may not provide package information. Therefore " +
+                    "YourClass.class.getPackage() returns null. As alternative use scanPackageForAnnotatedClasses(YourClass.class).");
+        }
         Set<Class<?>> entities = Classes.matching(Matchers.annotatedWith(javax.persistence.Entity.class).or(Matchers.annotatedWith(Embeddable.class))).in(entityPackage);
+        addClasses(entities);
+        return this;
+    }
 
+    public ExtendedAnnotationConfiguration scanPackageForAnnotatedClasses(Class<?> classToScanPackage) {
+        if (classToScanPackage == null) {
+            throw new NullPointerException("Argument must not be null.");
+        }
+        Set<Class<?>> entities = Classes.matching(Matchers.annotatedWith(javax.persistence.Entity.class).or(Matchers.annotatedWith(Embeddable.class))).in(classToScanPackage);
+        addClasses(entities);
+        return this;
+    }
+
+
+    private void addClasses(Set<Class<?>> entities) {
         for (Class<?> entity : entities) {
             log.info("Adding {} to AnnotationConfiguration.", entity.getName());
             addAnnotatedClass(entity);
         }
-        return this;
     }
 }
