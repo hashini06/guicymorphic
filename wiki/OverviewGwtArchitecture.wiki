@@ -8,7 +8,11 @@ I'd caution against following the mentioned word by word. Use event bus and comm
 
 = Different flavors of Model View Presenter =
 
-Todo: Compare mvp here
+Basically there is what I call the "Google" style MVP as this is presenter in already mentioned gwt sample project and Ray Ryan's talk. It's point is that the View doesn't have a reference to the Presenter at least this is how they presented it. The presenter installs it's listeners via the HasClickHandlers. Also the View needs to have asWidget() method which I find rather nasty.
+
+The alternative is what I call .Net style MVP. This is the style you can find in various .Net turotial and blog posts and is used even before Gwt 1.0. Basically both the View and Presenter have reference to each other. In theory this sounds worse but in practice I find this approach better.
+
+Both ways are presenter in-dept in the corresponding articles.
 
 = History handling =
 
