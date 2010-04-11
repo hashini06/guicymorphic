@@ -44,8 +44,24 @@ public class Classes {
      *                                    happening with classloaders.
      */
     public Set<Class<?>> in(Package pack) {
-        String packageName = pack.getName();
-        String packageOnly = pack.getName();
+        return in(pack.getName());
+    }
+
+    public Set<Class<?>> in(Class<?> className) {
+        if (className == null) {
+            throw new NullPointerException("ClassName cannot be null.");
+        }
+        String name = className.getName();
+        if ("".equals(name.trim()) || name.startsWith("[")) {
+            throw new IllegalArgumentException("Cannot use default package or Array types.");
+        }
+        int lastDotIndex = name.lastIndexOf('.');
+        return in(name.substring(0, lastDotIndex));
+    }
+
+    public Set<Class<?>> in(String fqPackageName) {
+        String packageName = fqPackageName;
+        String packageOnly = fqPackageName;
 
         final boolean recursive = true;
 
@@ -172,4 +188,3 @@ public class Classes {
     }
 
 }
-
