@@ -12,8 +12,8 @@ For artifacts not in central repository Guicymorphic provides it's own repositor
 
 Currently the following artifacts are available
 
-Guicymorphic framework. E.g. generic hibernate dao, extended hibernate factory, etc
-
+~~Guicymorphic framework. E.g. generic hibernate dao, extended hibernate factory, etc~~
+Not yet published.
 {{{
 <dependency>
    <groupId>guicymorphic</groupId>
@@ -52,8 +52,6 @@ Guava-libraries r4.
    </dependency>
 </dependencies>
 }}}
-
-
 
 
 
