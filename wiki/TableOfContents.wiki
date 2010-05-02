@@ -12,5 +12,5 @@
   * [OverviewTools   Useful tools]
      * [RunningJetty   Running Jetty]
      * [SchemaExport   Exporting Schema with Hibernate]
-  * [MavenRepository   Conveniance repository]
+  * [MavenRepository   Maven repository]
   * [About About]
