@@ -1,13 +1,5 @@
-#summary One-sentence summary of this page.
+#summary Google style MVP flavor
 
-= Introduction =
-
-Add your content here.
+The full example is at [http://guicymorphic.googlecode.com/svn/trunk/examples/src/guicymorphic/examples/gwt/mvp/google src/guicymorphic/examples/gwt/mvp/google/].
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
