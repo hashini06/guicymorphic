@@ -1,5 +1,7 @@
 #summary what will get done
 
+==Authentication and authorization module==
+
   * Finish documentation
   * Clean ant and Eclipse configuration
   * Better JavaDocs
