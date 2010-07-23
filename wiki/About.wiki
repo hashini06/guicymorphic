@@ -1,7 +1,7 @@
 #summary What guicymorphic is about
 #labels Featured
 
-Basically some colleagues asked me if I can show them how to use Guice in an web application with mvp style gwt code. As a side effect I am publishing my effort thus far for everybody to see.
+My former colleagues, great people from [http://www.cosylab.com Cosylab], asked me for help in setting up Guice, Hibernate and GWT. As a side effect I am publishing parts of the code here.
 
 It is fully functional MVP style web-app using Guice and Hibernate.
 
