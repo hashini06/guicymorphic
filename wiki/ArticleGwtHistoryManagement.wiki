@@ -1,4 +1,3 @@
 #summary A way to do history management
 
-
 The full example is at [http://guicymorphic.googlecode.com/svn/trunk/examples/src/guicymorphic/examples/gwt/history/ /src/guicymorphic/examples/gwt/history/].
