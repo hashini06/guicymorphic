@@ -42,17 +42,6 @@ Warp-persist compiled at the time of writing this. The revision was r327.
 </dependency>
 }}}
 
-Guava-libraries r4.
-
-{{{
-<dependency>
-   <groupId>com.google.common</groupId>
-   <artifactId>guava</artifactId>
-   <version>r4</version>
-   </dependency>
-</dependencies>
-}}}
-
 Guiceberry 3.0.0.
 
 {{{
@@ -74,5 +63,3 @@ Testing-libraries-for-java (tl4j) 1.1.1
    </dependency>
 </dependencies>
 }}}
-
-
