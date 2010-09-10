@@ -1,0 +1,174 @@
+Index: src/com/google/inject/InjectorImpl.java
+===================================================================
+--- src/com/google/inject/InjectorImpl.java	(revision 940)
++++ src/com/google/inject/InjectorImpl.java	(revision )
+@@ -30,6 +30,7 @@
+ import com.google.inject.internal.LinkedBindingImpl;
+ import com.google.inject.internal.LinkedProviderBindingImpl;
+ import com.google.inject.internal.Lists;
++import com.google.inject.internal.MapMaker;
+ import com.google.inject.internal.Maps;
+ import com.google.inject.internal.MatcherAndConverter;
+ import com.google.inject.internal.Nullable;
+@@ -79,13 +80,9 @@
+     if (parent != null) {
+       localContext = parent.localContext;
+     } else {
+-      localContext = new ThreadLocal<Object[]>() {
+-        protected Object[] initialValue() {
+-          return new Object[1];
++      localContext = new MapMaker().makeMap();
+-        }
++    }
+-      };
+-    }
++  }
+-  }
+ 
+   /** Indexes bindings by type. */
+   void index() {
+@@ -793,22 +790,30 @@
+     return getProvider(type).get();
+   }
+ 
+-  final ThreadLocal<Object[]> localContext;
++  // ThreadLocal performs almost 2x fast but it is not cleared at the end in servlet environment
++  // and Tomcat puts SEVERE ThreadLocal not cleared possible memory leak info in the logs.
++  // For me it is acceptable price to pay to replace TL with plain concurrent map.
++  // I imagine for some this price (almost 2x slower injections) is to high for some. 
++  final Map<Thread, InternalContext> localContext;
+ 
+   /** Looks up thread local context. Creates (and removes) a new context if necessary. */
+   <T> T callInContext(ContextualCallable<T> callable) throws ErrorsException {
+-    Object[] reference = localContext.get();
+-    if (reference[0] == null) {
+-      reference[0] = new InternalContext();
++    Thread currentThread = Thread.currentThread();
++    InternalContext internalContext = localContext.get(currentThread);
++    if (internalContext == null) {
++      internalContext = new InternalContext();
++      localContext.put(currentThread, internalContext);
+       try {
+-        return callable.call((InternalContext)reference[0]);
+-      } finally {
++        return callable.call(internalContext);
++      }
++      finally {
+         // Only clear the context if this call created it.
+-        reference[0] = null;
++        localContext.remove(currentThread);
+       }
+-    } else {
++    }
++    else {
+       // Someone else will clean up this context.
+-      return callable.call((InternalContext)reference[0]);
++      return callable.call(internalContext);
+     }
+   }
+ 
+Index: src/com/google/inject/InjectorBuilder.java
+===================================================================
+--- src/com/google/inject/InjectorBuilder.java	(revision 922)
++++ src/com/google/inject/InjectorBuilder.java	(revision )
+@@ -22,6 +22,7 @@
+ import com.google.inject.internal.ImmutableSet;
+ import com.google.inject.internal.InternalContext;
+ import com.google.inject.internal.Iterables;
++import com.google.inject.internal.StackTraceElements;
+ import com.google.inject.internal.Stopwatch;
+ import com.google.inject.spi.Dependency;
+ import java.util.Collection;
+@@ -149,8 +150,16 @@
+       }
+     }
+ 
++    try {
+-    errors.throwCreationExceptionIfErrorsExist();
+-  }
++      errors.throwCreationExceptionIfErrorsExist();
++    }
++    catch (RuntimeException e) {
++      // this is the code that clears the static cache on error see
++      // com.google.inject.internal.StackTraceElements#lineNumbersCache comment
++      StackTraceElements.lineNumbersCache.clear();
++      throw e;
++    }
++  }
+ 
+   /**
+    * Returns the injector being constructed. This is not necessarily the root injector.
+Index: src/com/google/inject/internal/BytecodeGen.java
+===================================================================
+--- src/com/google/inject/internal/BytecodeGen.java	(revision 873)
++++ src/com/google/inject/internal/BytecodeGen.java	(revision )
+@@ -81,26 +81,28 @@
+   private static final String CGLIB_PACKAGE = " "; // any string that's illegal in a package name
+   end[NO_AOP]*/
+ 
+-  /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
++  /** Use "-Dguice.custom.loader=true" to enable custom classloading. */
+   static final boolean HOOK_ENABLED
+-      = "true".equals(System.getProperty("guice.custom.loader", "true"));
++      = "true".equals(System.getProperty("guice.custom.loader", "false"));
+ 
+   /**
+    * Weak cache of bridge class loaders that make the Guice implementation
+    * classes visible to various code-generated proxies of client classes.
+    */
+-  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE
+-      = new MapMaker().weakKeys().weakValues().makeComputingMap(
+-          new Function<ClassLoader, ClassLoader>() {
++  // Using IODH idiom therefore in case of bridging disabled MapMaker will not create a thread.
++  private static class CLASS_LOADER_CACHE {
++    private static final Map<ClassLoader, ClassLoader> INSTANCE = new MapMaker()
++        .weakKeys().weakValues().makeComputingMap(new Function<ClassLoader, ClassLoader>() {
+-    public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
+-      logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
+-      return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+-        public ClassLoader run() {
+-          return new BridgeClassLoader(typeClassLoader);
+-        }
+-      });
+-    }
+-  });
++          public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
++            logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
++            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
++              public ClassLoader run() {
++                return new BridgeClassLoader(typeClassLoader);
++              }
++            });
++          }
++        });
++  }
+ 
+   /**
+    * For class loaders, {@code null}, is always an alias to the
+@@ -146,7 +148,7 @@
+     }
+ 
+     if (HOOK_ENABLED && Visibility.forType(type) == Visibility.PUBLIC) {
+-      return CLASS_LOADER_CACHE.get(delegate);
++      return CLASS_LOADER_CACHE.INSTANCE.get(delegate);
+     }
+ 
+     return delegate;
+Index: src/com/google/inject/internal/StackTraceElements.java
+===================================================================
+--- src/com/google/inject/internal/StackTraceElements.java	(revision 852)
++++ src/com/google/inject/internal/StackTraceElements.java	(revision )
+@@ -29,7 +29,12 @@
+ public class StackTraceElements {
+ 
+   /*if[AOP]*/
+-  static final Map<Class<?>, LineNumbers> lineNumbersCache = new MapMaker().weakKeys().softValues()
++  // Since this is not a weak.soft map (self cleaning) we clear it explicitly after reporting errors
++  // This map is only populated if error happens. Therefore Guice will clear it after it is finished
++  // reporting errors. Thread safety is maintained. If N concurrent Guice creations fail in worst
++  // case scenario a previously cleared entry is recreated. Imho this is acceptable price to pay.
++  // Map is cleared from com.google.inject.InjectorBuilder.initializeStatically().
++  public static final Map<Class<?>, LineNumbers> lineNumbersCache = new MapMaker()
+       .makeComputingMap(new Function<Class<?>, LineNumbers>() {
+         public LineNumbers apply(Class<?> key) {
+           try {
