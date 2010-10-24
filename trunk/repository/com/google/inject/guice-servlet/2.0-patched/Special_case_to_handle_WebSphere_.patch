@@ -1,0 +1,43 @@
+Index: servlet/src/com/google/inject/servlet/ServletDefinition.java
+===================================================================
+--- servlet/src/com/google/inject/servlet/ServletDefinition.java	(revision 930)
++++ servlet/src/com/google/inject/servlet/ServletDefinition.java	(revision )
+@@ -134,15 +134,36 @@
+   public boolean service(ServletRequest servletRequest,
+       ServletResponse servletResponse) throws IOException, ServletException {
+ 
+-    final boolean serve = shouldServe(((HttpServletRequest) servletRequest).getServletPath());
++    // special case to handle WebSphere
++    // on mapping to default servlet WebSphere sawps servlet path for servlet info
++    // from all the Servers in the world this only happens on WebSphere
++    HttpServletRequest guiceRequest = ((HttpServletRequest) servletRequest);
++    String guicePath = guiceRequest.getServletPath();
+ 
++    if (guiceRequest.getPathInfo() != null && (guicePath == null || "".equals(guicePath.trim())
++        || ("/".equals(guicePath)))) {
++      guicePath = guiceRequest.getPathInfo();
++      guiceRequest = new HttpServletRequestWrapper(guiceRequest) {
++        @Override public String getServletPath() {
++          return super.getPathInfo();
++        }
++
++        @Override public String getPathInfo() {
++          return "";
++        }
++      };
++    }
++
++    final boolean serve = shouldServe(guicePath);
++
+     //invocations of the chain end at the first matched servlet
+     if (serve) {
+-      doService(servletRequest, servletResponse);
++      doService(guiceRequest, servletResponse);
+     }
+ 
+     //return false if no servlet matched (so we can proceed down to the web.xml servlets)
+     return serve;
++
+   }
+ 
+   /**
